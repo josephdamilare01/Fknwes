@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fake News Detection Machine</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fake News Detection Machine</h1>
+  
+  <textarea id="newsText" placeholder="Enter news text..." rows="6"></textarea><br>
+  <button onclick="checkFakeNews()">Check</button><br><br>
+  
+  <div id="result"></div>
+  
+  <script>
+    function checkFakeNews() {
+      var text = document.getElementById("newsText").value;
+      
+      fetch('http://127.0.0.1:8000', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: text })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("result").innerHTML = "<strong>Prediction:</strong> " + (data.prediction === "1" ? "Fake" : "Not Fake");
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("result").innerText = "Error: Failed to connect to prediction server.";
+      });
+    }
+  </script>
+</body>
+</html>
